@@ -29,6 +29,7 @@ def graphql_server():
     query = QueryType()
     movie = ObjectType('Movie')
     query.set_field('movie_with_id', r.movie_with_id)
+    query.set_field('get_all_movies',r.get_all_movies)
 
     mutation = MutationType()
     mutation.set_field('update_movie_rate', r.update_movie_rate)

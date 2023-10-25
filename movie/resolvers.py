@@ -28,5 +28,8 @@ def resolve_actors_in_movie(movie, info):
         return actors
 
 def updated_actor_movie_list(movie,actor_id):
-    new_movie_list={}
-    with open
+    ...
+
+def get_all_movies(_,info):
+    with open('{}/data/movies.json'.format("."), "r") as rfile:
+        return json.load(rfile)

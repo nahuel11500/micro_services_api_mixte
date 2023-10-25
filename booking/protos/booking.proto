@@ -1,0 +1,33 @@
+syntax = "proto3";
+import "google/protobuf/empty.proto";
+
+service Booking {
+  rpc GetBookings(google.protobuf.Empty) returns (stream BookingUser);
+  rpc getBookingByUserId(userid) returns (BookingUser);
+  rpc AddNewMovieBooking(BookingRequest) returns (SuccessMessage);
+}
+
+message BookingUser{
+  repeated DateItem dates = 1;
+  string userid =2 ;
+}
+
+message userid{
+  string userid=1;
+}
+
+message DateItem{
+  string date = 1;
+  repeated string movies = 2;
+}
+
+message BookingRequest {
+  string date = 1;
+  string movieid = 2;
+  string userid=3;
+}
+
+message SuccessMessage {
+  string message = 1;
+}
+
