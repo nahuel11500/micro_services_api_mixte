@@ -44,21 +44,20 @@ def get_movies():
    query = """
 query Get_all_movies{   
    get_all_movies{
-      movies {
         id
         title
         director
         rating
-        }
-      }
-    }
+   }
+}
 """
    response = requests.post("http://127.0.0.1:3001/graphql",json={'query': query})
    return make_response(response.json(), response.status_code)
 
 @app.route("/users/<userid>", methods=['POST'])
 def add_user(userid):
-   ## A Modifier
+   ## Fonctionnel, mettre bien les trois arguments dans le body ainsi que la clée Content-type avec la value application/json dans le
+   ## header sur Postman
    req = request.get_json()
    for user in users:
       if str(user["id"]) == str(userid):
@@ -68,8 +67,7 @@ def add_user(userid):
    return res
 
 @app.route("/bookings/<userid>", methods=['POST'])
-def add_booking_byuser(userid):
-   ## A Modifier
+def add_booking_user(userid):
    req = request.get_json()
    response = requests.post(f"http://{HOST}:3201/bookings/{userid}",json=req)
    return make_response(response.json(), response.status_code)
