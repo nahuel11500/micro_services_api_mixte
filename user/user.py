@@ -74,39 +74,6 @@ def add_booking_byuser(userid):
    response = requests.post(f"http://{HOST}:3201/bookings/{userid}",json=req)
    return make_response(response.json(), response.status_code)
 
-@app.route("/movies", methods=['GET'])
-def get_movies():
-    query = """
-query Get_all_movies {
-    get_all_movies {
-        id
-        title
-        director
-        rating
-    }
-}
-    """
-    response = requests.post("http://localhost:3001/graphql", json={'query':  query})
-    return make_response(response.json(), response.status_code)
-
-@app.route("/users/<userid>", methods=['POST'])
-def add_user(userid):
-   req = request.get_json()
-   for user in users:
-      if str(user["id"]) == str(userid):
-            return make_response(jsonify({"error":"User already exists"}),409)
-   users.append(req)
-   res = make_response(jsonify(req),200)
-   return res
-
-@app.route("/bookings/<userid>", methods=['POST'])
-def add_booking_byuser(userid):
-   req = request.get_json()
-   response = requests.post(f"http://{HOST}:3201/bookings/{userid}",json=req)
-   return make_response(response.json(), response.status_code)
-
-
-
 
 if __name__ == "__main__":
    print("Server running in port %s"%(PORT))
