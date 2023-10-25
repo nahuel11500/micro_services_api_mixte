@@ -1,15 +1,23 @@
 type Query {
+    get_all_movies : [Movie]
     movie_with_id(_id: String!): Movie
     actor_with_id(_id: String!): Actor
-    get_all_movies: Movies
-}
-type Mutation {
-    update_movie_rate(_id: String!, _rate: Float!): Movie
+    movie_with_title(_title: String!): Movie
+    best_rated_movie : Movie
+    worst_rated_movie : Movie
+    best_rated_movie_of_actor(_id: String!): Movie
+    worst_rated_movie_of_actor(_id: String!): Movie
+    youngest_actor_in_movie(_id:String!): Actor
+    oldest_actor_in_movie(_id:String!) : Actor
+    colaboration_of_actors(_id1:String!,_id2: String!):[Movie]
 }
 
-type Movies {
-    movies: [Movie!]!
+type Mutation {
+    update_movie_rate(_id: String!, _rate: Float!): Movie
+    create_movie(_id: String!,_title: String!,_director: String!,_rating: Float!,_actors: [String]!): String
+    delete_movie(_id:String!): String
 }
+
 type Movie {
     id: String!
     title: String!
@@ -17,7 +25,6 @@ type Movie {
     rating: Float!
     actors: [Actor]
 }
-
 type Actor {
     id: String!
     firstname: String!
