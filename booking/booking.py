@@ -5,7 +5,7 @@ import booking_pb2_grpc
 import json
 import showtime_pb2
 import showtime_pb2_grpc
-
+import os
 
 class BookingServicer(booking_pb2_grpc.BookingServicer):
 
@@ -29,7 +29,7 @@ class BookingServicer(booking_pb2_grpc.BookingServicer):
         userId = request.userid
 
         # Make a request to see if the date is available for the movie
-        with grpc.insecure_channel('localhost:3002') as channel:
+        with grpc.insecure_channel('localhost:4001') as channel:
             stub = showtime_pb2_grpc.ShowtimeStub(channel)
             showtime_pb2.Movie_Date()
             movie_date = showtime_pb2.Movie_Date(date=str(datee))
@@ -54,10 +54,11 @@ class BookingServicer(booking_pb2_grpc.BookingServicer):
                 return booking_pb2.SuccessMessage(message = "Booking Successful")
         return booking_pb2.SuccessMessage(message="Booking Unsuccessful")
 
+
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     booking_pb2_grpc.add_BookingServicer_to_server(BookingServicer(), server)
-    server.add_insecure_port('[::]:3004')
+    server.add_insecure_port('[::]:4000')
     server.start()
     server.wait_for_termination()
 

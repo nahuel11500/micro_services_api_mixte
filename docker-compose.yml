@@ -1,0 +1,24 @@
+version: "3.9"
+
+services:
+  movie:
+    container_name: movie_container_TP2
+    build: ./movie/
+    ports:
+      - "3201:3201"
+  showtime:
+    container_name: showtime_container_TP2
+    build: ./showtime/
+    ports:
+      - "4001:4001"
+  user:
+    container_name: user_container_TP2
+    build: ./user/
+    ports:
+        - "3203:3203"
+  booking:
+    container_name: booking_container_TP2
+    build: ./booking/
+    ports:
+        - "4000:4000"
+

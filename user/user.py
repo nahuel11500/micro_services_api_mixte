@@ -1,7 +1,6 @@
-from flask import Flask, render_template, request, jsonify, make_response
+from flask import Flask, request, jsonify, make_response
 import requests
 import json
-from werkzeug.exceptions import NotFound
 import booking_pb2_grpc
 import booking_pb2
 import grpc
@@ -31,7 +30,7 @@ def get_user_byid(userid):
 
 @app.route("/bookings/<userid>", methods=['GET'])
 def get_booking_for_user(userid):
-   with grpc.insecure_channel('localhost:3004') as channel:
+   with grpc.insecure_channel('localhost:4000') as channel:
       stub = booking_pb2_grpc.BookingStub(channel)
       booking_pb2.userid()
       movie_date = booking_pb2.userid(userid=str(userid))
@@ -39,20 +38,7 @@ def get_booking_for_user(userid):
    channel.close()
    return make_response(json_format.MessageToJson(bookings), 200)
 
-@app.route("/movies", methods=['GET'])
-def get_movies():
-   query = """
-query Get_all_movies{   
-   get_all_movies{
-        id
-        title
-        director
-        rating
-   }
-}
-"""
-   response = requests.post("http://127.0.0.1:3001/graphql",json={'query': query})
-   return make_response(response.json(), response.status_code)
+
 
 @app.route("/users/<userid>", methods=['POST'])
 def add_user(userid):
@@ -69,8 +55,165 @@ def add_user(userid):
 @app.route("/bookings/<userid>", methods=['POST'])
 def add_booking_user(userid):
    req = request.get_json()
+
+   # Create a request object to send to the gRPC service
+   grpc_request = booking_pb2.BookingRequest(
+      date=req['date'],
+      movieid=req['movieid'],
+      userid=userid
+   )
+
+   with grpc.insecure_channel('localhost:4000') as channel:
+      stub = booking_pb2_grpc.BookingStub(channel)
+
+      # Call the AddNewMovieBooking method in the "booking" micro-service
+      grpc_response = stub.AddNewMovieBooking(grpc_request)
+      # Handle the gRPC response and convert it to a Flask response
+      response_data = {
+         "message": grpc_response.message  # You may need to adjust this based on the actual response structure
+      }
+
+      return make_response(jsonify(response_data), 200)
+
+
+@app.route("/movies", methods=['GET'])
+def get_movies():
+    query = """
+query Get_all_movies {
+    get_all_movies {
+        id
+        title
+        director
+        rating
+    }
+}
+    """
+    response = requests.post("http://localhost:3001/graphql", json={'query':  query})
+    return make_response(response.json(), response.status_code)
+
+@app.route("/bookings/<userid>", methods=['POST'])
+def add_booking_byuser(userid):
+   req = request.get_json()
    response = requests.post(f"http://{HOST}:3201/bookings/{userid}",json=req)
    return make_response(response.json(), response.status_code)
+
+
+@app.route("/best_rated_movie", methods=['GET'])
+def best_rated_movie():
+   query = """
+query Best_Rated_Movie {
+    best_rated_movie {
+        id
+        title
+        director
+        rating
+    }
+}
+    """
+   response = requests.post("http://localhost:3001/graphql", json={'query':  query})
+   return make_response(response.json(), response.status_code)
+
+@app.route("/worst_rated_movie", methods=['GET'])
+def worst_rated_movie():
+   query = """
+query Worst_Rated_Movie {
+    worst_rated_movie {
+        id
+        title
+        director
+        rating
+    }
+}
+    """
+   response = requests.post("http://localhost:3001/graphql", json={'query':  query})
+   return make_response(response.json(), response.status_code)  
+
+@app.route("/best_rated_movie_of_actor/<actor_id>", methods=['GET'])
+def best_rated_movie_of_actor(actor_id):
+   query = """
+query Best_rated_movie {
+    best_rated_movie_of_actor(_id:"""+ str(actor_id)+""") {
+        id
+        title
+        director
+        rating
+    }
+}
+
+"""
+   response = requests.post("http://localhost:3001/graphql", json={"query" : query})
+   return make_response(response.json(), response.status_code)  
+
+
+@app.route("/worst_rated_movie_of_actor/<actor_id>", methods=['GET'])
+def worst_rated_movie_of_actor(actor_id):
+   query = """
+query Worst_rated_movie {
+    worst_rated_movie_of_actor(_id:"""+ str(actor_id)+""") {
+        id
+        title
+        director
+        rating
+    }
+}
+
+"""
+   response = requests.post("http://localhost:3001/graphql", json={"query" : query})
+   return make_response(response.json(), response.status_code)  
+
+@app.route("/youngest_actor_in_movie/<movie_id>", methods=['GET'])
+def youngest_actor_in_movie(movie_id):
+   query = """
+query Youngest_actor_in_movie {
+    youngest_actor_in_movie(_id:"""+movie_id+""") {
+        id
+        firstname
+        lastname
+        birthyear
+        films
+    }
+}
+    """
+   response = requests.post("http://localhost:3001/graphql", json={'query':  query})
+   return make_response(response.json(), response.status_code)  
+
+@app.route("/oldest_actor_in_movie/<movie_id>", methods=['GET'])
+def oldest_actor_in_movie(movie_id):
+   query = """
+query Oldest_actor_in_movie {
+    oldest_actor_in_movie(_id:"""+movie_id+""") {
+        id
+        firstname
+        lastname
+        birthyear
+        films
+    }
+}
+    """
+   response = requests.post("http://localhost:3001/graphql", json={'query':  query})
+   return make_response(response.json(), response.status_code)  
+
+@app.route("/colaboration_of_actors/<id_actors>", methods=['GET'])
+def colaboration_of_actors(id_actors):
+   id_actor1 = id_actors.split('-')[0]
+   id_actor2 = id_actors.split('-')[1]
+   print(type(id_actor1))
+   query = """
+query Colaboration_of_actors {
+    colaboration_of_actors(_id1: """+id_actor1+""" , _id2: """+id_actor2+""") {
+        id
+        title
+        director
+        rating
+    }
+}
+
+    """
+   print(id_actor1)
+   print(id_actor2)
+   print(query)
+   response = requests.post("http://localhost:3001/graphql", json={'query':  query})
+   return make_response(response.json(), response.status_code)  
 
 
 if __name__ == "__main__":

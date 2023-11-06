@@ -7,7 +7,7 @@ import resolvers as r
 PORT = 3001
 HOST = '0.0.0.0'
 app = Flask(__name__)
-type_defs = load_schema_from_path('movie/movie.graphql')
+type_defs = load_schema_from_path('movie.graphql')
 query = QueryType()
 movie = ObjectType('Movie')
 query.set_field('movie_with_id', r.movie_with_id)

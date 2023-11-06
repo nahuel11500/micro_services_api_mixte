@@ -3,7 +3,7 @@ import json
 
 def get_all_movies(self,info):
      res = []
-     with open('movie/data/movies.json'.format("."), "r") as file:
+     with open('data/movies.json'.format("."), "r") as file:
         movies = json.load(file)
         for movie in movies['movies']:
             movie['actors'] = resolve_actors_in_movie(movie,nullcontext)
@@ -11,14 +11,14 @@ def get_all_movies(self,info):
      return res
 
 def movie_with_id(_,info,_id):
-    with open('movie/data/movies.json'.format("."), "r") as file:
+    with open('data/movies.json'.format("."), "r") as file:
         movies = json.load(file)
         for movie in movies['movies']:
             if movie['id'] == _id:
                 return movie
             
 def actor_with_id(_,info,_id):
-    with open('movie/data/actors.json'.format("."), "r") as file:
+    with open('data/actors.json'.format("."), "r") as file:
         actors = json.load(file)
         for actor in actors['actors']:
             if actor['id'] == _id:
@@ -27,25 +27,25 @@ def actor_with_id(_,info,_id):
 def update_movie_rate(_,info,_id,_rate):
     newmovies = {}
     newmovie = {}
-    with open('movie/data/movies.json'.format("."), "r") as rfile:
+    with open('data/movies.json'.format("."), "r") as rfile:
         movies = json.load(rfile)
         for movie in movies['movies']:
             if movie['id'] == _id:
                 movie['rating'] = _rate
                 newmovie = movie
                 newmovies = movies
-    with open('movie/data/movies.json'.format("."), "w") as wfile:
+    with open('data/movies.json'.format("."), "w") as wfile:
         json.dump(newmovies, wfile)
     return newmovie
 
 def resolve_actors_in_movie(movie, info):
-    with open('movie/data/actors.json'.format("."), "r") as file:
+    with open('data/actors.json'.format("."), "r") as file:
         data = json.load(file)
         actors = [actor for actor in data['actors'] if movie['id'] in actor['films']]
         return actors
 
 def delete_movie(_,info,_id):
-    with open('movie/data/movies.json'.format("."), "r") as file:
+    with open('data/movies.json'.format("."), "r") as file:
         movies = json.load(file)
         for movie in movies['movies']:
             if movie['id'] == _id:
@@ -54,7 +54,7 @@ def delete_movie(_,info,_id):
     return 'Movie Not Found'
 
 def create_movie(_,info,_id,_title,_director,_rating,_actors):
-    with open('movie/data/movies.json'.format("."), "r") as file:
+    with open('data/movies.json'.format("."), "r") as file:
         movies = json.load(file)
         for movie in movies['movies']:
             if movie['id'] == _id:
@@ -69,7 +69,7 @@ def create_movie(_,info,_id,_title,_director,_rating,_actors):
         return "Movie Created Successfully"
  
 def best_rated_movie(_,info):
-     with open('movie/data/movies.json'.format("."), "r") as file:
+     with open('data/movies.json'.format("."), "r") as file:
         movies = json.load(file)
         best =  movies['movies'][0]
         for movie in movies['movies']:
@@ -78,7 +78,7 @@ def best_rated_movie(_,info):
         return best
      
 def worst_rated_movie(_,info):
-     with open('movie/data/movies.json'.format("."), "r") as file:
+     with open('data/movies.json'.format("."), "r") as file:
         movies = json.load(file)
         worst =  movies['movies'][0]
         for movie in movies['movies']:

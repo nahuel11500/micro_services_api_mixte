@@ -1,11 +1,10 @@
-
 import json
 
 import requests
 
 
 def test_service_user():
-    url = "http://172.16.134.102:3203/"
+    url = "http://127.0.0.1:3203/"
     print("Request is :")
     print("GET http://172.16.134.102:3203/")
     print("Response is :")
@@ -14,7 +13,7 @@ def test_service_user():
     print()
     input("Push on Enter to make the following request : See all Users")
 
-    url = "http://172.16.134.102:3203/users"
+    url = "http://127.0.0.1:3203/users"
     print("Request is :")
     print("GET " + url)
     print("Response is :")
@@ -23,7 +22,7 @@ def test_service_user():
     print()
     input("Push on Enter to make the following request : Get the information about the user Chris Rivers")
 
-    url = "http://172.16.134.102:3203/users/chris_rivers"
+    url = "http://127.0.0.1:3203/users/chris_rivers"
     print("Request is :")
     print("GET " + url)
     print("Response is :")
@@ -33,7 +32,7 @@ def test_service_user():
     input("Push on Enter to make the following request : See all movies")
 
     ## Fait appel au service movie
-    url = "http://172.16.134.102:3203/movies"
+    url = "http://127.0.0.1:3203/movies"
     print("Request is :")
     print("GET " + url)
     print("Response is :")
@@ -43,7 +42,7 @@ def test_service_user():
     input("Push on Enter to make the following request : See the booking of Chris Rivers")
 
     ## Fait appel au service booking
-    url = "http://172.16.134.102:3203/bookings/chris_rivers"
+    url = "http://127.0.0.1:3203/bookings/chris_rivers"
     print("Request is :")
     print("GET " + url)
     print("Response is :")
@@ -53,7 +52,7 @@ def test_service_user():
     input("Push on Enter to make the following request : Add an already existing user")
 
     ## Fait appel à une méthode post
-    url = "http://172.16.134.102:3203/users/chris_rivers"
+    url = "http://127.0.0.1:3203/users/chris_rivers"
     query = """
 {
     "id": "chris_rivers",
@@ -71,7 +70,7 @@ def test_service_user():
     print()
     input("Push on Enter to make the following request : Add an new user")
 
-    url = "http://172.16.134.102:3203/users/test"
+    url = "http://127.0.0.1:3203/users/test"
     query = """
     {
         "id": "test",
@@ -103,10 +102,43 @@ query Get_all_movies{
 
 
 def test_service_booking():
-    print("test_service_booking Not Implementend")
+    # Define the URL for the Flask route
+    url = "http://127.0.0.1:3203/bookings/peter_curley"  # Replace with the actual URL
 
-def test_service_times():
-    print("test_service_times Not Implementend")
+    # Define the GraphQL query for the gRPC request
+    data = {
+        "date": "19991201",
+        "movieid": "123",
+        "userid": "peter_curley"
+    }
+    print("Request is:")
+    print("POST " + url)
+    print("Body is:")
+    print(data)
+
+    # Send the HTTP POST request to the Flask route
+    response = requests.post(url, json=data)
+
+    print("Response is:")
+    print(response.json())
+
+    # Define the GraphQL query for the gRPC request
+    data = {
+        "date": "20151201",
+        "movieid": "267eedb8-0f5d-42d5-8f43-72426b9fb3e6",
+        "userid": "peter_curley"
+    }
+    print("Request is:")
+    print("POST " + url)
+    print("Body is:")
+    print(data)
+
+    # Send the HTTP POST request to the Flask route
+    response = requests.post(url, json=data)
+
+    print("Response is:")
+    print(response.json())
+
 
 if __name__ == "__main__":
     input("Appuyer sur Enter pour lancer le test du service user")
@@ -115,4 +147,3 @@ if __name__ == "__main__":
     input("Appuyer sur Enter pour lancer le test du service movie")
     test_service_movie()
     test_service_booking()
-    test_service_times()
